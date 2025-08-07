@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { LocalNotifications } from '@capacitor/local-notifications';
-import { Haptics } from '@capacitor/haptics';
-import './Home.css';
+
+import PageWrapper from '../components/PageWrapper';import { Link } from 'react-router-dom';
+
+import PageWrapper from '../components/PageWrapper';import { LocalNotifications } from '@capacitor/local-notifications';
+
+import PageWrapper from '../components/PageWrapper';import { Haptics } from '@capacitor/haptics';
+
+import PageWrapper from '../components/PageWrapper';import './Home.css';
 
 
 interface Reminder {
@@ -67,8 +71,7 @@ function filterRemindersByTab(reminders: Reminder[]) {
     }
 
     if (activeTab === 'month') {
-      return (
-        nextDue.getMonth() === now.getMonth() &&
+      return (\n    <PageWrapper>\n      nextDue.getMonth() === now.getMonth() &&
         nextDue.getFullYear() === now.getFullYear()
       );
     }
@@ -201,12 +204,11 @@ const checkCalendarReminders = () => {
 }, 30000); // every 30 seconds
 
 
-  return () => clearInterval(interval);
+  return (\n    <PageWrapper>\n      ) => clearInterval(interval);
 }, []);
 
 
- return (
-  <div className="min-h-screen bg-gray-900 text-white flex justify-center items-start pt-10 px-4">
+ return (\n    <PageWrapper>\n      <div className="min-h-screen bg-gray-900 text-white flex justify-center items-start pt-10 px-4">
 <div className="w-full max-w-md sm:max-w-2xl px-4 sm:px-6 mx-auto pb-24 sm:pb-10">
       <h1 className="text-3xl font-bold text-blue-500 mb-4">Reminders</h1>
 
@@ -276,3 +278,4 @@ const checkCalendarReminders = () => {
 );
 
 }
+

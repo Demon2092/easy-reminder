@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { LocalNotifications } from '@capacitor/local-notifications';
-import { Haptics } from '@capacitor/haptics';
 
-export default function AddReminder() {
+import PageWrapper from '../components/PageWrapper';import { Link } from 'react-router-dom';
+
+import PageWrapper from '../components/PageWrapper';import { useNavigate } from 'react-router-dom';
+
+import PageWrapper from '../components/PageWrapper';import { LocalNotifications } from '@capacitor/local-notifications';
+
+import PageWrapper from '../components/PageWrapper';import { Haptics } from '@capacitor/haptics';
+
+
+import PageWrapper from '../components/PageWrapper';export default function AddReminder() {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [interval, setInterval] = useState('');
@@ -84,8 +89,7 @@ export default function AddReminder() {
     navigate('/');
   };
 
-  return (
-<div className="min-h-screen bg-gray-900 text-white px-4 sm:px-6 py-10 flex justify-center">
+  return (\n    <PageWrapper>\n      <div className="min-h-screen bg-gray-900 text-white px-4 sm:px-6 py-10 flex justify-center">
   <div className="w-full max-w-[600px] bg-gray-800 rounded-2xl p-6 shadow-lg space-y-6">
 	<Link
   to="/"
@@ -167,3 +171,4 @@ export default function AddReminder() {
 );
 
 }
+

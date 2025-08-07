@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+
+import PageWrapper from '../components/PageWrapper';import Calendar from 'react-calendar';
+
+import PageWrapper from '../components/PageWrapper';import 'react-calendar/dist/Calendar.css';
 import { Link } from 'react-router-dom';
 
 
-interface CalendarData {
+
+import PageWrapper from '../components/PageWrapper';interface CalendarData {
   [date: string]: {
     notes?: string;
     reminders?: { title: string; time: string }[];
@@ -85,8 +88,7 @@ const handleDeleteReminder = (reminderIndex: number) => {
     localStorage.setItem('calendarData', JSON.stringify(updated));
   };
 
-  return (
-<div className="min-h-screen bg-gray-900 text-white flex justify-center items-start pt-10 px-4 overflow-x-hidden">
+  return (\n    <PageWrapper>\n      <div className="min-h-screen bg-gray-900 text-white flex justify-center items-start pt-10 px-4 overflow-x-hidden">
 <div className="w-full max-w-md sm:max-w-2xl bg-gray-800 rounded-xl p-6 shadow-lg space-y-6">
       <h1 className="text-2xl font-bold mb-2">Calendar</h1>
 <Link to="/" className="text-blue-400 hover:underline block mb-4">
@@ -180,4 +182,5 @@ const handleDeleteReminder = (reminderIndex: number) => {
 
 
 } 
+
 
