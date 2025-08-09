@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 type PageWrapperProps = {
   children: ReactNode;
@@ -6,8 +6,8 @@ type PageWrapperProps = {
 
 export default function PageWrapper({ children }: PageWrapperProps) {
   return (
-    <div className="min-h-screen bg-gray-800 text-white py-10 flex justify-center items-start">
-      <div className="w-full max-w-screen-sm px-4 sm:px-6">
+<div className="min-h-screen bg-gray-800 text-white py-10 flex items-start">
+<div className="w-full px-0">
         {children}
       </div>
     </div>
