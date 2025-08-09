@@ -84,7 +84,7 @@ export default function CalendarPage() {
 
   return (
   <PageWrapper>
-  <div className="w-full max-w-2xl bg-gray-800 rounded-xl p-6 shadow-lg space-y-6">
+  <div className="w-full max-w-2xl bg-gray-800 space-y-6">
     <h1 className="text-2xl font-bold mb-2">Calendar</h1>
     <Link to="/" className="text-blue-400 hover:underline block mb-4">← Back to Home</Link>
 

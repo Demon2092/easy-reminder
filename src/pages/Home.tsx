@@ -4,6 +4,11 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { Haptics } from '@capacitor/haptics';
 import PageWrapper from '../components/PageWrapper';
 import './Home.css';
+import { Reminderplug } from 'reminderplugin';
+
+
+
+
 
 interface Reminder {
   title: string;
@@ -67,50 +72,33 @@ export default function Home() {
     });
   }
 
-  const triggerAlert = async (reminder: Reminder) => {
-    const { title, type, alertDuration = 3, repeatCount = 1 } = reminder;
+const triggerAlert = async (reminder: Reminder) => {
+  const { title, type } = reminder;
 
-    if (type === 'notification') {
-      await LocalNotifications.schedule({
-        notifications: [{
-          title: 'Reminder',
-          body: title,
-          id: Date.now(),
-          schedule: { at: new Date(Date.now() + 1000) },
-        }],
-      });
-    }
+  // Use plugin only for these types
+  if (['sound', 'vibration', 'tts'].includes(type)) {
+    await Reminderplug.triggerReminder({
+      message: title,
+      playSound: type === 'sound' || type === 'tts',
+      vibrate: type === 'vibration',
+    });
+    return;
+  }
 
-    if (type === 'vibration') {
-      for (let i = 0; i < repeatCount; i++) {
-        await Haptics.vibrate();
-        if (i < repeatCount - 1) await new Promise(r => setTimeout(r, 1000));
-      }
-    }
-
-    if (type === 'tts') {
-      for (let i = 0; i < repeatCount; i++) {
-        const utter = new SpeechSynthesisUtterance(title);
-        speechSynthesis.speak(utter);
-        await new Promise(r => setTimeout(r, (alertDuration + 1) * 1000));
-      }
-    }
-
-    if (type === 'sound') {
-      for (let i = 0; i < repeatCount; i++) {
-        const audio = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
-        audio.loop = true;
-        audio.play();
-
-        await new Promise(r => setTimeout(r, alertDuration * 1000));
-        audio.pause();
-        audio.currentTime = 0;
-
-        if (i < repeatCount - 1) await new Promise(r => setTimeout(r, 1000));
-      }
-    }
-  };
-
+  // Fallback for basic notification type
+  if (type === 'notification') {
+    await LocalNotifications.schedule({
+      notifications: [{
+        title: 'Reminder',
+        body: title,
+        id: Date.now(),
+        schedule: { at: new Date(Date.now() + 1000) },
+        sound: 'default',
+        channelId: 'high-priority',
+      }],
+    });
+  }
+};
   const deleteReminder = (indexToDelete: number) => {
     const confirmed = window.confirm("Are you sure you want to delete this reminder?");
     if (!confirmed) return;
@@ -146,30 +134,35 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const checkReminders = () => {
-      const storedReminders = localStorage.getItem('reminders');
-      if (!storedReminders) return;
+const checkReminders = async () => {
+  const storedReminders = localStorage.getItem('reminders');
+  if (!storedReminders) return;
 
-      const now = Date.now();
-      const parsed = JSON.parse(storedReminders);
+  const now = Date.now();
+  const parsed = JSON.parse(storedReminders);
 
-      const updatedReminders = parsed.map((reminder: Reminder) => {
-        const intervalMinutes = parseInterval(reminder.interval);
-        const lastTriggered = reminder.lastTriggered || 0;
-        const shouldTrigger = intervalMinutes > 0 &&
-          now - lastTriggered >= intervalMinutes * 60 * 1000;
+  const updatedReminders = await Promise.all(parsed.map(async (reminder: Reminder) => {
+    const intervalMinutes = parseInterval(reminder.interval);
+    const lastTriggered = reminder.lastTriggered || 0;
+    const shouldTrigger = intervalMinutes > 0 &&
+      now - lastTriggered >= intervalMinutes * 60 * 1000;
 
-        if (shouldTrigger) {
-          triggerAlert(reminder);
-          return { ...reminder, lastTriggered: now };
-        }
+    if (shouldTrigger) {
+      try {
+        await triggerAlert(reminder);
+      } catch (err) {
+        console.error('Failed to trigger alert:', err);
+      }
+      return { ...reminder, lastTriggered: now };
+    }
 
-        return { ...reminder };
-      });
+    return { ...reminder };
+  }));
 
-      setReminders(updatedReminders);
-      localStorage.setItem('reminders', JSON.stringify(updatedReminders));
-    };
+  setReminders(updatedReminders);
+  localStorage.setItem('reminders', JSON.stringify(updatedReminders));
+};
+
 
     checkReminders();
     const interval = setInterval(() => {
@@ -186,10 +179,14 @@ export default function Home() {
         <h1 className="text-3xl font-bold text-blue-500 mb-4">Reminders</h1>
 
         <nav className="mb-4 space-x-4">
-          <Link to="/calendar" className="text-blue-300 hover:underline">Calendar</Link>
-          <Link to="/add" className="text-blue-300 hover:underline">Add Reminder</Link>
-          <Link to="/settings" className="text-blue-300 hover:underline">Settings</Link>
-        </nav>
+  <Link to="/calendar" className="text-blue-300 hover:underline">Calendar</Link>
+  <Link to="/add" className="text-blue-300 hover:underline">Add Reminder</Link>
+  <Link to="/settings" className="text-blue-300 hover:underline">Settings</Link>
+</nav>
+
+
+
+
 
         <div className="flex space-x-2 mb-6">
           {['today', 'week', 'month'].map((tab) => (

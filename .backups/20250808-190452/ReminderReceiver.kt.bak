@@ -1,0 +1,25 @@
+package com.easy.reminder.plugin
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+
+class ReminderReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.action != "com.easy.reminder.ACTION_FIRE") return
+        val id = intent.getStringExtra("reminderId") ?: return
+        val intervalMs = intent.getLongExtra("intervalMs", 0L)
+
+        // TODO: Hook up your alert system here
+        AlertUtils.triggerAlert(context, speakText = null, playSound = true, vibrate = true)
+
+        val dto = ReminderDTO(
+            id = id,
+            intervalMinutes = (intervalMs / 60_000L),
+            lastTriggered = System.currentTimeMillis(),
+            active = true
+        )
+        ReminderScheduler.scheduleNext(context, dto, System.currentTimeMillis())
+    }
+}
+
